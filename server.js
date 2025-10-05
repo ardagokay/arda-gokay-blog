@@ -7,9 +7,18 @@ const multer = require('multer');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/blog', {
+// MongoDB Connection - RENDER İÇİN
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/blog';
+
+console.log('Connecting to MongoDB...');
+
+mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
+}).then(() => {
+    console.log('✅ MongoDB connected successfully!');
+}).catch(err => {
+    console.error('❌ MongoDB connection error:', err);
 });
 
 const storage = multer.diskStorage({
@@ -50,9 +59,14 @@ app.use(session({
 }));
 
 app.get('/', async (req, res) => {
-    const posts = await Post.find().sort({ createdAt: -1 });
-    const categories = await Category.find().sort({ name: 1 });
-    res.render('index', { posts, categories });
+    try {
+        const posts = await Post.find().sort({ createdAt: -1 });
+        const categories = await Category.find().sort({ name: 1 });
+        res.render('index', { posts, categories });
+    } catch (error) {
+        console.error('Error loading posts:', error);
+        res.render('index', { posts: [], categories: [] });
+    }
 });
 
 app.get('/search', async (req, res) => {
@@ -217,7 +231,7 @@ app.delete('/admin/categories/:id', async (req, res) => {
     res.redirect('/admin/categories');
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Blog sitesi http://localhost:${PORT} adresinde çalışıyor`);
 });
