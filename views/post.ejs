@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= post.title %> | BlogSitem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                        dark: '#1F2937',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .prose {
+            max-width: none;
+            color: #374151;
+            line-height: 1.75;
+        }
+        .prose h2 {
+            color: #1F2937;
+            font-weight: 700;
+            font-size: 1.5em;
+            margin-top: 2em;
+            margin-bottom: 1em;
+        }
+        .prose h3 {
+            color: #374151;
+            font-weight: 600;
+            font-size: 1.25em;
+            margin-top: 1.6em;
+            margin-bottom: 0.6em;
+        }
+        .prose p {
+            margin-bottom: 1.25em;
+        }
+        .prose ul, .prose ol {
+            margin-bottom: 1.25em;
+            padding-left: 1.625em;
+        }
+        .prose li {
+            margin-bottom: 0.5em;
+        }
+        .prose blockquote {
+            font-weight: 500;
+            font-style: italic;
+            color: #6B7280;
+            border-left-width: 0.25rem;
+            border-left-color: #E5E7EB;
+            quotes: "\201C""\201D""\2018""\2019";
+            margin-top: 1.6em;
+            margin-bottom: 1.6em;
+            padding-left: 1em;
+        }
+    </style>
+</head>
+<body class="font-inter bg-light text-dark">
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-pen-nib text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 group-hover:text-primary transition-colors duration-300">BlogSitem</h1>
+                    </div>
+                </a>
+
+                <!-- Search & Navigation -->
+                <div class="flex items-center space-x-8">
+                    <!-- Search -->
+                    <form action="/search" method="GET" class="relative">
+                        <input type="text" name="q" placeholder="Makalelerde ara..." 
+                               class="pl-10 pr-4 py-3 w-80 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-gray-50 transition-all duration-300">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </form>
+
+                    <!-- Navigation -->
+                    <nav class="hidden lg:flex items-center space-x-8">
+                        <a href="/" class="text-gray-600 hover:text-primary font-medium transition-colors duration-300">
+                            Ana Sayfa
+                        </a>
+                        <% categories.forEach(category => { %>
+                        <a href="/category/<%= category.slug %>" class="text-gray-600 hover:text-primary font-medium transition-colors duration-300">
+                            <%= category.name %>
+                        </a>
+                        <% }); %>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Content -->
+    <main class="min-h-screen py-12">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <!-- Article Header -->
+            <article class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <!-- Featured Image -->
+                <% if(post.image) { %>
+                <div class="relative h-96 overflow-hidden">
+                    <img src="<%= post.image %>" alt="<%= post.title %>" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div class="absolute bottom-6 left-8">
+                        <span class="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            <%= post.category %>
+                        </span>
+                    </div>
+                </div>
+                <% } %>
+
+                <!-- Article Content -->
+                <div class="p-8">
+                    <!-- Meta Information -->
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-4 text-gray-500">
+                            <div class="flex items-center space-x-2">
+                                <i class="far fa-calendar"></i>
+                                <span><%= post.createdAt.toLocaleDateString('tr-TR') %></span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="far fa-clock"></i>
+                                <span>5 dk okuma</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button class="w-10 h-10 border border-gray-200 rounded-full flex items-center justify-center hover:border-primary hover:text-primary transition-colors duration-300">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button class="w-10 h-10 border border-gray-200 rounded-full flex items-center justify-center hover:border-primary hover:text-primary transition-colors duration-300">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="text-4xl font-bold text-dark mb-6 leading-tight">
+                        <%= post.title %>
+                    </h1>
+
+                    <!-- Content -->
+                    <div class="prose prose-lg max-w-none">
+                        <%= post.content.replace(/\n/g, '<br>') %>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-2 mt-8 pt-6 border-t border-gray-200">
+                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                            <%= post.category %>
+                        </span>
+                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                            Blog
+                        </span>
+                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                            Yazılım
+                        </span>
+                    </div>
+
+                    <!-- Share -->
+                    <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-gray-600 font-medium">Paylaş:</span>
+                            <div class="flex space-x-3">
+                                <button class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors duration-300">
+                                    <i class="fab fa-twitter"></i>
+                                </button>
+                                <button class="w-10 h-10 bg-blue-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition-colors duration-300">
+                                    <i class="fab fa-facebook-f"></i>
+                                </button>
+                                <button class="w-10 h-10 bg-blue-400 text-white rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-300">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <a href="/admin/posts/<%= post._id %>/edit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-secondary transition-colors duration-300 font-medium">
+                            Yazıyı Düzenle
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Related Posts -->
+            <div class="mt-12">
+                <h2 class="text-2xl font-bold text-dark mb-6">Benzer Yazılar</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Bu kısım dinamik olarak benzer yazılar getirilebilir -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                        <h3 class="font-semibold text-dark mb-2">Yazılım Geliştirme Süreçleri</h3>
+                        <p class="text-gray-600 text-sm mb-3">Modern yazılım geliştirme metodolojileri ve en iyi uygulamalar...</p>
+                        <a href="#" class="text-primary font-medium text-sm hover:text-secondary transition-colors duration-300">Devamını Oku →</a>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                        <h3 class="font-semibold text-dark mb-2">Web Tasarım Trendleri 2024</h3>
+                        <p class="text-gray-600 text-sm mb-3">Bu yılın en popüler web tasarım trendleri ve örnekleri...</p>
+                        <a href="#" class="text-primary font-medium text-sm hover:text-secondary transition-colors duration-300">Devamını Oku →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-3 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-pen-nib text-white text-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold">BlogSitem</h3>
+                </div>
+                <p class="text-gray-400 max-w-md mx-auto mb-6">
+                    Modern blog platformu ile bilgiyi paylaşmanın en şık yolu.
+                </p>
+                <div class="flex justify-center space-x-4 mb-6">
+                    <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-300">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+                <p class="text-gray-500 text-sm">
+                    &copy; 2024 BlogSitem. Tüm hakları saklıdır.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

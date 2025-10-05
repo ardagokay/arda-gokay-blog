@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yazı Düzenle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <div class="w-64 bg-gray-800 text-white">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold">Blog Admin</h2>
+            </div>
+            <nav class="mt-6">
+                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Dashboard</a>
+                <a href="/admin/posts" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yazılar</a>
+                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yeni Yazı</a>
+                <a href="/admin/categories" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Kategoriler</a>
+                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Siteyi Gör</a>
+            </nav>
+        </div>
+
+        <div class="flex-1 p-8">
+            <div class="mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Yazıyı Düzenle</h1>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <form method="POST" action="/admin/posts/<%= post._id %>?_method=PUT" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Başlık</label>
+                        <input type="text" name="title" value="<%= post.title %>" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Kategori</label>
+                        <select name="category" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <option value="">Kategori Seçin</option>
+                            <% categories.forEach(category => { %>
+                            <option value="<%= category.slug %>" <%= post.category === category.slug ? 'selected' : '' %>><%= category.name %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <% if(post.image) { %>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Mevcut Görsel</label>
+                        <img src="<%= post.image %>" alt="Mevcut görsel" class="w-32 h-32 object-cover rounded-lg">
+                    </div>
+                    <% } %>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Yeni Görsel Seç</label>
+                        <input type="file" name="image" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" accept="image/*">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Veya Görsel URL</label>
+                        <input type="text" name="image_url" value="<%= post.image && !post.image.startsWith('/uploads/') ? post.image : '' %>" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://...">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">İçerik</label>
+                        <textarea name="content" rows="15" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required><%= post.content %></textarea>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                            Güncelle
+                        </button>
+                        <a href="/admin/posts" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600">
+                            İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
