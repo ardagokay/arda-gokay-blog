@@ -51,7 +51,8 @@ const Comment = mongoose.model('Comment', {
     createdAt: { type: Date, default: Date.now }
 });
 
-const transporter = nodemailer.createTransporter({
+// DÜZELTİLDİ: createTransporter → createTransport
+const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER || 'arda07gokay@gmail.com',
