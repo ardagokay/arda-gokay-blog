@@ -3,62 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori Yönetimi</title>
+    <title>Kategori Yönetimi | Arda Gökay</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#DC2626',
+                        secondary: '#991B1B', 
+                        accent: '#F59E0B',
+                        dark: '#0F172A',
+                        light: '#1E293B'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-darker text-gray-300">
     <div class="flex h-screen">
-        <div class="w-64 bg-gray-800 text-white">
+        <!-- Sidebar -->
+        <div class="w-64 bg-light border-r border-gray-700">
             <div class="p-6">
-                <h2 class="text-2xl font-bold">Blog Admin</h2>
+                <h2 class="text-2xl font-bold text-white">Arda Gökay</h2>
+                <p class="text-sm text-gray-400">Admin Panel</p>
             </div>
             <nav class="mt-6">
-                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Dashboard</a>
-                <a href="/admin/posts" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yazılar</a>
-                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yeni Yazı</a>
-                <a href="/admin/categories" class="block py-3 px-6 bg-gray-700 text-white">Kategoriler</a>
-                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Siteyi Gör</a>
+                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/posts" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-newspaper mr-3"></i>Yazılar
+                </a>
+                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-plus mr-3"></i>Yeni Yazı
+                </a>
+                <a href="/admin/categories" class="block py-3 px-6 bg-primary text-white">
+                    <i class="fas fa-folder mr-3"></i>Kategoriler
+                </a>
+                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-eye mr-3"></i>Siteyi Gör
+                </a>
             </nav>
         </div>
 
-        <div class="flex-1 p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Kategori Yönetimi</h1>
-                <a href="/admin/categories/new" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                    Yeni Kategori
+        <!-- Main Content -->
+        <div class="flex-1 p-8 overflow-y-auto">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Kategori Yönetimi</h1>
+                    <p class="text-gray-400">Psikoloji, Bilim, Felsefe, Din, Mitoloji kategorilerini yönetin</p>
+                </div>
+                <a href="/admin/categories/new" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-xl transition-all duration-300 font-medium flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Yeni Kategori</span>
                 </a>
             </div>
 
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kategori Adı</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Slug</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <% categories.forEach(category => { %>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900"><%= category.name %></div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <%= category.slug %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="/admin/categories/<%= category._id %>/edit" class="text-yellow-600 hover:text-yellow-900 mr-3">Düzenle</a>
-                                <form action="/admin/categories/<%= category._id %>?_method=DELETE" method="POST" class="inline">
-                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Bu kategoriyi silmek istediğinizden emin misiniz?')">Sil</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
+            <!-- Categories Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-light rounded-2xl p-6 border border-gray-700 hover-lift transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-red-500 bg-opacity-20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-brain text-red-500 text-xl"></i>
+                        </div>
+                        <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">5 Yazı</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Psikoloji</h3>
+                    <p class="text-gray-400 text-sm">İnsan zihni ve davranışları</p>
+                </div>
+
+                <div class="bg-light rounded-2xl p-6 border border-gray-700 hover-lift transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-500 bg-opacity-20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-atom text-blue-500 text-xl"></i>
+                        </div>
+                        <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold">3 Yazı</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Bilim</h3>
+                    <p class="text-gray-400 text-sm">Bilimsel araştırmalar ve keşifler</p>
+                </div>
+
+                <div class="bg-light rounded-2xl p-6 border border-gray-700 hover-lift transition-all duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-500 bg-opacity-20 rounded-xl flex items-center justify-center">
+                            <i class="fas book text-green-500 text-xl"></i>
+                        </div>
+                        <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">4 Yazı</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Felsefe</h3>
+                    <p class="text-gray-400 text-sm">Varoluş ve bilgi felsefesi</p>
+                </div>
+            </div>
+
+            <!-- Categories Table -->
+            <div class="bg-light rounded-2xl shadow-xl border border-gray-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-700">
+                    <h2 class="text-xl font-bold text-white">Tüm Kategoriler</h2>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-tag"></i>
+                                        <span>Kategori Adı</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-link"></i>
+                                        <span>Slug</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-calendar"></i>
+                                        <span>Oluşturulma</span>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-cog"></i>
+                                        <span>İşlemler</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                            <% categories.forEach(category => { %>
+                            <tr class="hover:bg-gray-800 transition-colors duration-300">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-primary bg-opacity-20 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-folder text-primary text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-semibold text-white"><%= category.name %></div>
+                                            <div class="text-xs text-gray-400">Toplam Yazı: 0</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-400 bg-gray-800 px-3 py-1 rounded-full inline-block">
+                                        /category/<%= category.slug %>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                    <%= category.createdAt.toLocaleDateString('tr-TR') %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex items-center space-x-3">
+                                        <a href="/admin/categories/<%= category._id %>/edit" 
+                                           class="text-yellow-400 hover:text-yellow-300 transition-colors duration-300 flex items-center space-x-1 group">
+                                            <i class="fas fa-edit group-hover:scale-110 transition-transform duration-300"></i>
+                                            <span>Düzenle</span>
+                                        </a>
+                                        <form action="/admin/categories/<%= category._id %>?_method=DELETE" method="POST" class="inline">
+                                            <button type="submit" 
+                                                    class="text-red-400 hover:text-red-300 transition-colors duration-300 flex items-center space-x-1 group"
+                                                    onclick="return confirm('Bu kategoriyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')">
+                                                <i class="fas fa-trash group-hover:scale-110 transition-transform duration-300"></i>
+                                                <span>Sil</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                            
+                            <% if(categories.length === 0){ %>
+                            <tr>
+                                <td colspan="4" class="px-6 py-12 text-center">
+                                    <div class="w-24 h-24 mx-auto mb-4 bg-gray-800 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-folder-open text-3xl text-gray-500"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">Henüz Kategori Yok</h3>
+                                    <p class="text-gray-400 mb-4">İlk kategoriyi eklemek için "Yeni Kategori" butonuna tıklayın.</p>
+                                    <a href="/admin/categories/new" class="inline-block bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-xl transition-all duration-300 font-medium">
+                                        <i class="fas fa-plus mr-2"></i>İlk Kategoriyi Ekle
+                                    </a>
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Toplam Kategori</p>
+                            <p class="text-2xl font-bold text-white"><%= categories.length %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-primary bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-folder text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Aktif Kategori</p>
+                            <p class="text-2xl font-bold text-white"><%= categories.length %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Toplam Yazı</p>
+                            <p class="text-2xl font-bold text-white">12</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-newspaper text-blue-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Ort. Yazı/Kategori</p>
+                            <p class="text-2xl font-bold text-white">4</p>
+                        </div>
+                        <div class="w-12 h-12 bg-accent bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chart-bar text-accent"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <style>
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+    </style>
 </body>
 </html>

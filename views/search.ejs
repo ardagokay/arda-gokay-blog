@@ -3,93 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arama: <%= searchQuery %></title>
+    <title><%= searchQuery ? `"${searchQuery}" Arama - Arda Gökay` : 'Tüm Yazılar - Arda Gökay' %></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#DC2626',
+                        secondary: '#991B1B', 
+                        accent: '#F59E0B',
+                        dark: '#0F172A',
+                        darker: '#020617',
+                        light: '#1E293B',
+                        lightbg: '#FFFFFF',
+                        lighttext: '#1F2937'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%);
+        }
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F3F4F6 50%, #FFFFFF 100%);
+        }
+        .name-gradient {
+            background: linear-gradient(135deg, #DC2626 0%, #F59E0B 50%, #DC2626 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+        }
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-8px);
+        }
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-effect-light {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <header class="bg-white shadow-sm">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <h1 class="text-3xl font-bold text-gray-800">BlogSitem</h1>
-                
-                <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
-                    <form action="/search" method="GET" class="flex">
-                        <input type="text" name="q" value="<%= searchQuery %>" placeholder="Yazılarda ara..." 
-                               class="px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-48 md:w-64">
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700">
-                            <i class="fas fa-search"></i>
-                        </button>
+<body class="font-inter bg-darker text-gray-300 dark" id="theme-body">
+    <!-- Header -->
+    <header class="glass-effect shadow-2xl sticky top-0 z-50 dark:glass-effect-light" id="header">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-brain text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold name-gradient">Arda Gökay</h1>
+                        <p class="text-xs text-gray-400 group-hover:text-primary transition-colors duration-300 dark:text-gray-600">Arama Sonuçları</p>
+                    </div>
+                </a>
+
+                <!-- Search & Navigation -->
+                <div class="flex items-center space-x-8">
+                    <!-- Search Form -->
+                    <form action="/search" method="GET" class="relative">
+                        <input type="text" name="q" value="<%= searchQuery %>" placeholder="Psikoloji, bilim, felsefe..." 
+                               class="pl-12 pr-4 py-3 w-80 bg-light border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 text-white placeholder-gray-400 dark:bg-gray-100 dark:text-gray-800 dark:border-gray-300">
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
                     </form>
-                    
-                    <nav class="hidden md:flex space-x-6">
-                        <a href="/" class="text-gray-600 hover:text-blue-600">Ana Sayfa</a>
-                        <% categories.forEach(category => { %>
-                        <a href="/category/<%= category.slug %>" class="text-gray-600 hover:text-blue-600"><%= category.name %></a>
+
+                    <!-- Navigation -->
+                    <nav class="hidden lg:flex items-center space-x-8">
+                        <a href="/" class="text-gray-300 hover:text-primary font-medium transition-colors duration-300 flex items-center space-x-2 group dark:text-gray-700">
+                            <i class="fas fa-home text-primary group-hover:scale-110 transition-transform duration-300"></i>
+                            <span>Ana Sayfa</span>
+                        </a>
+                        <% categories.forEach(function(category){ %>
+                        <a href="/category/<%= category.slug %>" class="text-gray-300 hover:text-primary font-medium transition-colors duration-300 hover-lift px-3 py-2 rounded-lg dark:text-gray-700">
+                            <%= category.name %>
+                        </a>
                         <% }); %>
-                        <a href="/admin" class="text-blue-600 hover:text-blue-800">Yönetim</a>
+                        <button onclick="toggleTheme()" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-secondary transition-all duration-300">
+                            <i class="fas fa-moon" id="theme-icon"></i>
+                        </button>
+                        <a href="/admin" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-xl transition-all duration-300 font-medium border border-primary border-opacity-30">
+                            <i class="fas fa-cog mr-2"></i>Panel
+                        </a>
                     </nav>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">
-                <% if(searchQuery) { %>
-                "<%= searchQuery %>" için arama sonuçları
-                <% } else { %>
-                Tüm Yazılar
-                <% } %>
-            </h1>
-            <p class="text-gray-600 mt-2"><%= posts.length %> yazı bulundu</p>
-        </div>
+    <!-- Main Content -->
+    <main class="min-h-screen py-12">
+        <div class="container mx-auto px-6">
+            <!-- Search Header -->
+            <div class="text-center mb-12">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center">
+                    <i class="fas fa-search text-white text-2xl"></i>
+                </div>
+                
+                <h1 class="text-4xl font-bold text-white mb-4 dark:text-gray-800">
+                    <% if(searchQuery) { %>
+                    "<span class="name-gradient"><%= searchQuery %></span>" için arama sonuçları
+                    <% } else { %>
+                    <span class="name-gradient">Tüm Yazılar</span>
+                    <% } %>
+                </h1>
+                
+                <p class="text-gray-400 text-lg dark:text-gray-600">
+                    <% if(searchQuery) { %>
+                    <span class="text-primary font-semibold"><%= posts.length %></span> yazı bulundu
+                    <% } else { %>
+                    Toplam <span class="text-primary font-semibold"><%= posts.length %></span> yazı
+                    <% } %>
+                </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <% posts.forEach(post => { %>
-            <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <% if(post.image) { %>
-                <div class="w-full h-48 overflow-hidden">
-                    <img src="<%= post.image %>" alt="<%= post.title %>" class="w-full h-full object-cover">
+                <!-- Search Tips -->
+                <% if(searchQuery && posts.length === 0) { %>
+                <div class="mt-6 bg-light rounded-2xl p-6 max-w-2xl mx-auto dark:bg-white">
+                    <h3 class="text-lg font-semibold text-white mb-3 dark:text-gray-800">Arama İpuçları:</h3>
+                    <ul class="text-gray-400 text-sm space-y-2 dark:text-gray-600">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-lightbulb text-accent"></i>
+                            <span>Kelimenin doğru yazıldığından emin olun</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-lightbulb text-accent"></i>
+                            <span>Daha genel anahtar kelimeler deneyin</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-lightbulb text-accent"></i>
+                            <span>Etiketler üzerinden arama yapmayı deneyin</span>
+                        </li>
+                    </ul>
                 </div>
                 <% } %>
-                <div class="p-6">
-                    <span class="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mb-3">
-                        <%= post.category %>
-                    </span>
-                    <h2 class="text-xl font-bold text-gray-800 mb-3">
-                        <%= post.title %>
-                    </h2>
-                    <p class="text-gray-600 mb-4 line-clamp-3">
-                        <%= post.content.substring(0, 150) %>...
-                    </p>
-                    <div class="flex justify-between items-center text-sm text-gray-500">
-                        <span><%= post.createdAt.toLocaleDateString('tr-TR') %></span>
-                        <a href="/post/<%= post._id %>" class="text-blue-600 hover:text-blue-800 font-medium">
-                            Devamını Oku →
-                        </a>
+            </div>
+
+            <!-- Results Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                <% posts.forEach(function(post){ %>
+                <article class="bg-light rounded-2xl overflow-hidden hover-lift border border-gray-700 group dark:bg-white dark:border-gray-200">
+                    <% if(post.image){ %>
+                    <div class="relative overflow-hidden">
+                        <img src="<%= post.image %>" alt="<%= post.title %>" 
+                             class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold border border-primary border-opacity-30">
+                                <%= post.category %>
+                            </span>
+                        </div>
+                        <div class="absolute bottom-4 right-4 flex space-x-2">
+                            <span class="bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
+                                <i class="far fa-eye mr-1"></i><%= post.views || 0 %>
+                            </span>
+                            <span class="bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
+                                <i class="far fa-heart mr-1"></i><%= post.likes || 0 %>
+                            </span>
+                        </div>
                     </div>
-                </div>
-            </article>
-            <% }); %>
-        </div>
+                    <% } %>
+                    
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-400 mb-3 dark:text-gray-500">
+                            <i class="far fa-calendar mr-2 text-primary"></i>
+                            <span><%= post.createdAt.toLocaleDateString('tr-TR') %></span>
+                            <span class="mx-2">•</span>
+                            <i class="far fa-clock mr-1 text-primary"></i>
+                            <span>5 dk</span>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-white mb-3 leading-tight group-hover:text-primary transition-colors duration-300 dark:text-gray-800">
+                            <%= post.title %>
+                        </h3>
+                        
+                        <p class="text-gray-400 mb-4 leading-relaxed line-clamp-3 dark:text-gray-600">
+                            <%= post.content.substring(0, 120) %>...
+                        </p>
 
-        <% if(posts.length === 0 && searchQuery) { %>
-        <div class="text-center py-12">
-            <i class="fas fa-search text-gray-300 text-6xl mb-4"></i>
-            <p class="text-gray-500 text-lg">"<%= searchQuery %>" için sonuç bulunamadı.</p>
-            <p class="text-gray-400 mt-2">Farklı kelimelerle tekrar deneyin.</p>
+                        <!-- Tags -->
+                        <% if(post.tags && post.tags.length > 0){ %>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <% post.tags.slice(0, 3).forEach(function(tag){ %>
+                            <span class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs dark:bg-gray-200 dark:text-gray-700">
+                                #<%= tag %>
+                            </span>
+                            <% }); %>
+                        </div>
+                        <% } %>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-700 dark:border-gray-300">
+                            <a href="/post/<%= post._id %>" class="text-primary font-semibold hover:text-accent transition-colors duration-300 flex items-center space-x-2 group">
+                                <span>Devamını Oku</span>
+                                <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform duration-300"></i>
+                            </a>
+                            <div class="flex items-center space-x-4 text-gray-500">
+                                <button onclick="likePost('<%= post._id %>')" class="flex items-center space-x-1 hover:text-red-500 transition-colors duration-300">
+                                    <i class="far fa-heart"></i>
+                                    <span class="text-sm"><%= post.likes || 0 %></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <% }); %>
+            </div>
+
+            <!-- No Results -->
+            <% if(posts.length === 0 && searchQuery) { %>
+            <div class="text-center py-16">
+                <div class="w-32 h-32 mx-auto mb-6 bg-light rounded-full flex items-center justify-center border border-gray-700 dark:bg-white dark:border-gray-200">
+                    <i class="fas fa-search text-4xl text-gray-500"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2 dark:text-gray-800">Sonuç Bulunamadı</h3>
+                <p class="text-gray-400 mb-6 dark:text-gray-600">"<%= searchQuery %>" için herhangi bir yazı bulunamadı.</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="/" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-xl transition-all duration-300 font-medium">
+                        <i class="fas fa-home mr-2"></i>Ana Sayfaya Dön
+                    </a>
+                    <button onclick="clearSearch()" class="border-2 border-primary text-primary px-6 py-3 rounded-xl hover:bg-primary hover:text-white transition-all duration-300 font-medium dark:text-primary dark:border-primary">
+                        <i class="fas fa-times mr-2"></i>Aramayı Temizle
+                    </button>
+                </div>
+            </div>
+            <% } %>
+
+            <!-- Popular Posts Sidebar -->
+            <% if(posts.length > 0 && popularPosts && popularPosts.length > 0) { %>
+            <div class="mt-16">
+                <h2 class="text-2xl font-bold text-white mb-6 dark:text-gray-800">Popüler Yazılar</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <% popularPosts.forEach(function(popularPost){ %>
+                    <a href="/post/<%= popularPost._id %>" class="bg-light rounded-xl p-4 border border-gray-700 hover-lift group dark:bg-white dark:border-gray-200">
+                        <% if(popularPost.image){ %>
+                        <img src="<%= popularPost.image %>" alt="<%= popularPost.title %>" 
+                             class="w-full h-32 object-cover rounded-lg mb-3 group-hover:scale-105 transition-transform duration-300">
+                        <% } %>
+                        <h4 class="font-semibold text-white text-sm mb-2 group-hover:text-primary transition-colors duration-300 dark:text-gray-800 line-clamp-2">
+                            <%= popularPost.title %>
+                        </h4>
+                        <div class="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
+                            <span><%= popularPost.views || 0 %> görüntüleme</span>
+                            <span><%= popularPost.likes || 0 %> beğeni</span>
+                        </div>
+                    </a>
+                    <% }); %>
+                </div>
+            </div>
+            <% } %>
         </div>
-        <% } %>
     </main>
 
-    <footer class="bg-gray-800 text-white mt-12">
-        <div class="container mx-auto px-4 py-8">
+    <!-- Footer -->
+    <footer class="bg-darker border-t border-gray-800 py-12 dark:bg-gray-800 dark:border-gray-700">
+        <div class="container mx-auto px-6">
             <div class="text-center">
-                <p>&copy; 2024 BlogSitem. Tüm hakları saklıdır.</p>
+                <div class="flex items-center justify-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-lg"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold name-gradient">Arda Gökay</h3>
+                </div>
+                
+                <p class="text-gray-400 max-w-md mx-auto mb-6 leading-relaxed dark:text-gray-300">
+                    Psikoloji, bilim, felsefe, din ve mitoloji üzerine derinlemesine analizler.
+                </p>
+
+                <div class="flex justify-center space-x-6 mb-6">
+                    <a href="https://github.com/ardagokay" class="text-gray-400 hover:text-primary transition-colors duration-300 dark:text-gray-300">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://www.instagram.com/ardagky01/" class="text-gray-400 hover:text-primary transition-colors duration-300 dark:text-gray-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/905383751633" class="text-gray-400 hover:text-primary transition-colors duration-300 dark:text-gray-300">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="mailto:arda07gokay@gmail.com" class="text-gray-400 hover:text-primary transition-colors duration-300 dark:text-gray-300">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+                
+                <p class="text-gray-500 text-sm dark:text-gray-400">
+                    &copy; 2025 <span class="name-gradient font-semibold">Arda Gökay</span>. Tüm hakları saklıdır.
+                </p>
             </div>
         </div>
     </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.getElementById('theme-body');
+            const header = document.getElementById('header');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        async function likePost(postId) {
+            try {
+                const response = await fetch(`/post/${postId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    location.reload();
+                }
+            } catch (error) {
+                console.error('Like error:', error);
+            }
+        }
+
+        function clearSearch() {
+            window.location.href = '/search';
+        }
+
+        // Highlight search terms in results
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchQuery = '<%= searchQuery %>';
+            if (searchQuery) {
+                const elements = document.querySelectorAll('h3, p');
+                elements.forEach(element => {
+                    const html = element.innerHTML;
+                    const regex = new RegExp(`(${searchQuery})`, 'gi');
+                    const newHtml = html.replace(regex, '<mark class="bg-accent text-white px-1 rounded">$1</mark>');
+                    element.innerHTML = newHtml;
+                });
+            }
+        });
+    </script>
 </body>
 </html>

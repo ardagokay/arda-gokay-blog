@@ -3,78 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yazı Yönetimi</title>
+    <title>Yazı Yönetimi | Arda Gökay</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#DC2626',
+                        secondary: '#991B1B', 
+                        accent: '#F59E0B',
+                        dark: '#0F172A',
+                        light: '#1E293B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-darker text-gray-300">
     <div class="flex h-screen">
-        <div class="w-64 bg-gray-800 text-white">
+        <!-- Sidebar -->
+        <div class="w-64 bg-light border-r border-gray-700">
             <div class="p-6">
-                <h2 class="text-2xl font-bold">Blog Admin</h2>
+                <h2 class="text-2xl font-bold text-white">Arda Gökay</h2>
+                <p class="text-sm text-gray-400">Admin Panel</p>
             </div>
             <nav class="mt-6">
-                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Dashboard</a>
-                <a href="/admin/posts" class="block py-3 px-6 bg-gray-700 text-white">Yazılar</a>
-                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yeni Yazı</a>
-                <a href="/admin/categories" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Kategoriler</a>
-                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Siteyi Gör</a>
+                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/posts" class="block py-3 px-6 bg-primary text-white">
+                    <i class="fas fa-newspaper mr-3"></i>Yazılar
+                </a>
+                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-plus mr-3"></i>Yeni Yazı
+                </a>
+                <a href="/admin/categories" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-folder mr-3"></i>Kategoriler
+                </a>
+                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-eye mr-3"></i>Siteyi Gör
+                </a>
             </nav>
         </div>
 
-        <div class="flex-1 p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Yazı Yönetimi</h1>
-                <a href="/admin/posts/new" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                    Yeni Yazı Ekle
+        <!-- Main Content -->
+        <div class="flex-1 p-8 overflow-y-auto">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Yazı Yönetimi</h1>
+                    <p class="text-gray-400">Tüm blog yazılarınızı yönetin ve düzenleyin</p>
+                </div>
+                <a href="/admin/posts/new" class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-xl transition-all duration-300 font-medium flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Yeni Yazı Ekle</span>
                 </a>
             </div>
 
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Görsel</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Başlık</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kategori</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tarih</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <% posts.forEach(post => { %>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <% if(post.image) { %>
-                                <img src="<%= post.image %>" alt="<%= post.title %>" class="w-16 h-16 object-cover rounded-lg">
-                                <% } else { %>
-                                <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                                    <span class="text-gray-400 text-xs">Resim Yok</span>
-                                </div>
-                                <% } %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900"><%= post.title %></div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                    <%= post.category %>
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <%= post.createdAt.toLocaleDateString('tr-TR') %>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="/admin/posts/<%= post._id %>/edit" class="text-yellow-600 hover:text-yellow-900 mr-3">Düzenle</a>
-                                <form action="/admin/posts/<%= post._id %>?_method=DELETE" method="POST" class="inline">
-                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Silmek istediğinizden emin misiniz?')">Sil</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Toplam Yazı</p>
+                            <p class="text-2xl font-bold text-white"><%= posts.length %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-newspaper text-blue-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Toplam Görüntüleme</p>
+                            <p class="text-2xl font-bold text-white"><%= getTotalViews(posts) %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-eye text-green-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Toplam Beğeni</p>
+                            <p class="text-2xl font-bold text-white"><%= getTotalLikes(posts) %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-red-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-heart text-red-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Ort. Görüntüleme</p>
+                            <p class="text-2xl font-bold text-white"><%= getAverageViews(posts) %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chart-bar text-purple-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts Table -->
+            <div class="bg-light rounded-2xl shadow-xl border border-gray-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-700">
+                    <h2 class="text-xl font-bold text-white">Tüm Yazılar</h2>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <i class="fas fa-image mr-2"></i>Görsel
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <i class="fas fa-heading mr-2"></i>Başlık
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <i class="fas fa-folder mr-2"></i>Kategori
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <i class="fas fa-chart-bar mr-2"></i>İstatistikler
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <i class="fas fa-calendar mr-2"></i>Tarih
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                                    <i class="fas fa-cog mr-2"></i>İşlemler
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                            <% posts.forEach(post => { %>
+                            <tr class="hover:bg-gray-800 transition-colors duration-300">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <% if(post.image) { %>
+                                    <img src="<%= post.image %>" alt="<%= post.title %>" class="w-16 h-16 object-cover rounded-xl border border-gray-600">
+                                    <% } else { %>
+                                    <div class="w-16 h-16 bg-gray-700 rounded-xl flex items-center justify-center border border-gray-600">
+                                        <i class="fas fa-image text-gray-400 text-xl"></i>
+                                    </div>
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="max-w-xs">
+                                        <div class="text-sm font-semibold text-white mb-1 line-clamp-2"><%= post.title %></div>
+                                        <% if(post.tags && post.tags.length > 0){ %>
+                                        <div class="flex flex-wrap gap-1 mt-1">
+                                            <% post.tags.slice(0, 2).forEach(function(tag){ %>
+                                            <span class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">#<%= tag %></span>
+                                            <% }); %>
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30">
+                                        <%= post.category %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-4 text-sm">
+                                        <div class="flex items-center space-x-1 text-blue-400">
+                                            <i class="fas fa-eye"></i>
+                                            <span><%= post.views || 0 %></span>
+                                        </div>
+                                        <div class="flex items-center space-x-1 text-red-400">
+                                            <i class="fas fa-heart"></i>
+                                            <span><%= post.likes || 0 %></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                    <%= post.createdAt.toLocaleDateString('tr-TR') %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex items-center space-x-3">
+                                        <a href="/post/<%= post._id %>" target="_blank" 
+                                           class="text-green-400 hover:text-green-300 transition-colors duration-300 flex items-center space-x-1 group"
+                                           title="Görüntüle">
+                                            <i class="fas fa-external-link-alt group-hover:scale-110 transition-transform duration-300"></i>
+                                        </a>
+                                        <a href="/admin/posts/<%= post._id %>/edit" 
+                                           class="text-yellow-400 hover:text-yellow-300 transition-colors duration-300 flex items-center space-x-1 group"
+                                           title="Düzenle">
+                                            <i class="fas fa-edit group-hover:scale-110 transition-transform duration-300"></i>
+                                        </a>
+                                        <form action="/admin/posts/<%= post._id %>?_method=DELETE" method="POST" class="inline">
+                                            <button type="submit" 
+                                                    class="text-red-400 hover:text-red-300 transition-colors duration-300 flex items-center space-x-1 group"
+                                                    title="Sil"
+                                                    onclick="return confirm('Bu yazıyı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')">
+                                                <i class="fas fa-trash group-hover:scale-110 transition-transform duration-300"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                            
+                            <% if(posts.length === 0){ %>
+                            <tr>
+                                <td colspan="6" class="px-6 py-12 text-center">
+                                    <div class="w-24 h-24 mx-auto mb-4 bg-gray-800 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-newspaper text-3xl text-gray-500"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">Henüz Yazı Yok</h3>
+                                    <p class="text-gray-400 mb-4">İlk yazınızı eklemek için "Yeni Yazı Ekle" butonuna tıklayın.</p>
+                                    <a href="/admin/posts/new" class="inline-block bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl hover:shadow-xl transition-all duration-300 font-medium">
+                                        <i class="fas fa-plus mr-2"></i>İlk Yazıyı Ekle
+                                    </a>
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Utility functions for statistics
+        function getTotalViews(posts) {
+            return posts.reduce((total, post) => total + (post.views || 0), 0);
+        }
+
+        function getTotalLikes(posts) {
+            return posts.reduce((total, post) => total + (post.likes || 0), 0);
+        }
+
+        function getAverageViews(posts) {
+            if (posts.length === 0) return 0;
+            return Math.round(getTotalViews(posts) / posts.length);
+        }
+    </script>
+
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 </body>
 </html>

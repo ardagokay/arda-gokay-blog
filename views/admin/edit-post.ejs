@@ -3,79 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yazı Düzenle</title>
+    <title>Yazı Düzenle | Arda Gökay</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#DC2626',
+                        secondary: '#991B1B', 
+                        accent: '#F59E0B',
+                        dark: '#0F172A',
+                        light: '#1E293B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .editor-toolbar {
+            background: #1E293B;
+            border: 1px solid #374151;
+            border-radius: 8px 8px 0 0;
+            padding: 8px;
+        }
+        .editor-content {
+            min-height: 400px;
+            background: #1E293B;
+            border: 1px solid #374151;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 16px;
+            color: white;
+        }
+        .editor-content:focus {
+            outline: none;
+        }
+        .toolbar-btn {
+            background: transparent;
+            border: none;
+            color: #9CA3AF;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .toolbar-btn:hover {
+            background: #374151;
+            color: white;
+        }
+        .toolbar-btn.active {
+            background: #DC2626;
+            color: white;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-darker text-gray-300">
     <div class="flex h-screen">
-        <div class="w-64 bg-gray-800 text-white">
+        <div class="w-64 bg-light border-r border-gray-700">
             <div class="p-6">
-                <h2 class="text-2xl font-bold">Blog Admin</h2>
+                <h2 class="text-2xl font-bold text-white">Arda Gökay</h2>
+                <p class="text-sm text-gray-400">Admin Panel</p>
             </div>
             <nav class="mt-6">
-                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Dashboard</a>
-                <a href="/admin/posts" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yazılar</a>
-                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yeni Yazı</a>
-                <a href="/admin/categories" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Kategoriler</a>
-                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Siteyi Gör</a>
+                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/posts" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-newspaper mr-3"></i>Yazılar
+                </a>
+                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-plus mr-3"></i>Yeni Yazı
+                </a>
+                <a href="/admin/categories" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-folder mr-3"></i>Kategoriler
+                </a>
+                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-eye mr-3"></i>Siteyi Gör
+                </a>
             </nav>
         </div>
 
-        <div class="flex-1 p-8">
+        <div class="flex-1 p-8 overflow-y-auto">
             <div class="mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Yazıyı Düzenle</h1>
+                <h1 class="text-3xl font-bold text-white">Yazıyı Düzenle</h1>
+                <p class="text-gray-400"><%= post.title %> - Görüntüleme: <%= post.views || 0 %> - Beğeni: <%= post.likes || 0 %></p>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
-                <form method="POST" action="/admin/posts/<%= post._id %>?_method=PUT" enctype="multipart/form-data">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Başlık</label>
-                        <input type="text" name="title" value="<%= post.title %>" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <div class="bg-light rounded-2xl shadow-xl border border-gray-700">
+                <form method="POST" action="/admin/posts/<%= post._id %>?_method=PUT" enctype="multipart/form-data" class="p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-white text-sm font-bold mb-2">Başlık</label>
+                            <input type="text" name="title" value="<%= post.title %>" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder-gray-400" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-white text-sm font-bold mb-2">Kategori</label>
+                            <select name="category" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white" required>
+                                <option value="">Kategori Seçin</option>
+                                <% categories.forEach(category => { %>
+                                <option value="<%= category.slug %>" <%= post.category === category.slug ? 'selected' : '' %>><%= category.name %></option>
+                                <% }); %>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Kategori</label>
-                        <select name="category" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                            <option value="">Kategori Seçin</option>
-                            <% categories.forEach(category => { %>
-                            <option value="<%= category.slug %>" <%= post.category === category.slug ? 'selected' : '' %>><%= category.name %></option>
-                            <% }); %>
-                        </select>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <% if(post.image) { %>
+                        <div>
+                            <label class="block text-white text-sm font-bold mb-2">Mevcut Görsel</label>
+                            <div class="relative group">
+                                <img src="<%= post.image %>" alt="Mevcut görsel" class="w-48 h-32 object-cover rounded-xl border-2 border-gray-600 group-hover:border-primary transition-colors duration-300">
+                                <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <a href="<%= post.image %>" target="_blank" class="bg-black bg-opacity-50 text-white p-1 rounded-full">
+                                        <i class="fas fa-expand text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm mt-2">Mevcut görsel</p>
+                        </div>
+                        <% } %>
+
+                        <div class="<%= post.image ? '' : 'lg:col-span-2' %>">
+                            <label class="block text-white text-sm font-bold mb-2">Yeni Görsel Seç</label>
+                            <input type="file" name="image" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-secondary" accept="image/*">
+                        </div>
                     </div>
 
-                    <% if(post.image) { %>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Mevcut Görsel</label>
-                        <img src="<%= post.image %>" alt="Mevcut görsel" class="w-32 h-32 object-cover rounded-lg">
-                    </div>
-                    <% } %>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Yeni Görsel Seç</label>
-                        <input type="file" name="image" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" accept="image/*">
+                    <div class="mb-6">
+                        <label class="block text-white text-sm font-bold mb-2">Veya Görsel URL</label>
+                        <input type="text" name="image_url" value="<%= post.image && !post.image.startsWith('/uploads/') ? post.image : '' %>" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder-gray-400" placeholder="https://example.com/image.jpg">
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Veya Görsel URL</label>
-                        <input type="text" name="image_url" value="<%= post.image && !post.image.startsWith('/uploads/') ? post.image : '' %>" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://...">
+                    <div class="mb-6">
+                        <label class="block text-white text-sm font-bold mb-2">Etiketler</label>
+                        <input type="text" name="tags" value="<%= post.tags ? post.tags.join(', ') : '' %>" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder-gray-400" placeholder="psikoloji, bilim, felsefe (virgülle ayırın)">
+                        <p class="text-gray-400 text-sm mt-1">Etiketler SEO için önemlidir. Virgülle ayırarak ekleyin.</p>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">İçerik</label>
-                        <textarea name="content" rows="15" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required><%= post.content %></textarea>
+                    <div class="mb-6">
+                        <label class="block text-white text-sm font-bold mb-2">İçerik</label>
+                        
+                        <!-- Rich Text Editor Toolbar -->
+                        <div class="editor-toolbar flex flex-wrap gap-1 mb-0">
+                            <button type="button" class="toolbar-btn" onclick="formatText('bold')" title="Kalın">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="formatText('italic')" title="İtalik">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="formatText('underline')" title="Altı Çizili">
+                                <i class="fas fa-underline"></i>
+                            </button>
+                            <div class="w-px h-6 bg-gray-600 mx-2"></div>
+                            <button type="button" class="toolbar-btn" onclick="formatText('insertUnorderedList')" title="Liste">
+                                <i class="fas fa-list-ul"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="formatText('insertOrderedList')" title="Numaralı Liste">
+                                <i class="fas fa-list-ol"></i>
+                            </button>
+                            <div class="w-px h-6 bg-gray-600 mx-2"></div>
+                            <button type="button" class="toolbar-btn" onclick="formatText('justifyLeft')" title="Sola Hizala">
+                                <i class="fas fa-align-left"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="formatText('justifyCenter')" title="Ortala">
+                                <i class="fas fa-align-center"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="formatText('justifyRight')" title="Sağa Hizala">
+                                <i class="fas fa-align-right"></i>
+                            </button>
+                            <div class="w-px h-6 bg-gray-600 mx-2"></div>
+                            <button type="button" class="toolbar-btn" onclick="insertLink()" title="Link Ekle">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="insertImage()" title="Resim Ekle">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="formatText('formatBlock', '<blockquote>')" title="Alıntı">
+                                <i class="fas fa-quote-right"></i>
+                            </button>
+                            <div class="w-px h-6 bg-gray-600 mx-2"></div>
+                            <button type="button" class="toolbar-btn" onclick="formatText('removeFormat')" title="Formatı Temizle">
+                                <i class="fas fa-eraser"></i>
+                            </button>
+                            <button type="button" class="toolbar-btn" onclick="toggleDarkMode()" title="Tema Değiştir">
+                                <i class="fas fa-palette"></i>
+                            </button>
+                        </div>
+
+                        <!-- Rich Text Editor -->
+                        <div 
+                            id="editor" 
+                            class="editor-content" 
+                            contenteditable="true"
+                            oninput="updateTextarea()"
+                        ><%= post.content %></div>
+                        
+                        <!-- Hidden textarea for form submission -->
+                        <textarea name="content" id="content" rows="15" class="hidden" required><%= post.content %></textarea>
                     </div>
 
-                    <div class="flex gap-4">
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                            Güncelle
+                    <div class="flex gap-4 pt-6 border-t border-gray-700">
+                        <button type="submit" class="bg-primary text-white px-8 py-3 rounded-xl hover:bg-secondary transition-all duration-300 font-medium flex items-center space-x-2">
+                            <i class="fas fa-save"></i>
+                            <span>Güncelle</span>
                         </button>
-                        <a href="/admin/posts" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600">
-                            İptal
+                        <a href="/admin/posts" class="bg-gray-700 text-white px-8 py-3 rounded-xl hover:bg-gray-600 transition-all duration-300 font-medium flex items-center space-x-2">
+                            <i class="fas fa-times"></i>
+                            <span>İptal</span>
+                        </a>
+                        <button type="button" onclick="previewContent()" class="bg-accent text-white px-8 py-3 rounded-xl hover:bg-yellow-600 transition-all duration-300 font-medium flex items-center space-x-2">
+                            <i class="fas fa-eye"></i>
+                            <span>Önizleme</span>
+                        </button>
+                        <a href="/post/<%= post._id %>" target="_blank" class="bg-green-600 text-white px-8 py-3 rounded-xl hover:bg-green-700 transition-all duration-300 font-medium flex items-center space-x-2">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>Yazıyı Gör</span>
                         </a>
                     </div>
                 </form>
             </div>
+
+            <!-- Stats Card -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Görüntülenme</p>
+                            <p class="text-2xl font-bold text-white"><%= post.views || 0 %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-primary bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-eye text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Beğeni</p>
+                            <p class="text-2xl font-bold text-white"><%= post.likes || 0 %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-red-500 bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-heart text-red-500"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-light rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-400 text-sm">Oluşturulma</p>
+                            <p class="text-sm font-semibold text-white"><%= post.createdAt.toLocaleDateString('tr-TR') %></p>
+                        </div>
+                        <div class="w-12 h-12 bg-accent bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-calendar text-accent"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Modal -->
+            <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+                <div class="bg-light rounded-2xl p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-white">İçerik Önizleme</h3>
+                        <button onclick="closePreview()" class="text-gray-400 hover:text-white">
+                            <i class="fas fa-times text-2xl"></i>
+                        </button>
+                    </div>
+                    <div id="previewContent" class="prose prose-invert max-w-none"></div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        function formatText(command, value = null) {
+            document.getElementById('editor').focus();
+            if (value) {
+                document.execCommand(command, false, value);
+            } else {
+                document.execCommand(command, false, null);
+            }
+            updateTextarea();
+        }
+
+        function insertLink() {
+            const url = prompt('Link URL girin:');
+            if (url) {
+                document.execCommand('createLink', false, url);
+                updateTextarea();
+            }
+        }
+
+        function insertImage() {
+            const url = prompt('Resim URL girin:');
+            if (url) {
+                document.execCommand('insertImage', false, url);
+                updateTextarea();
+            }
+        }
+
+        function updateTextarea() {
+            document.getElementById('content').value = document.getElementById('editor').innerHTML;
+        }
+
+        function previewContent() {
+            const content = document.getElementById('editor').innerHTML;
+            document.getElementById('previewContent').innerHTML = content;
+            document.getElementById('previewModal').classList.remove('hidden');
+            document.getElementById('previewModal').classList.add('flex');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.add('hidden');
+            document.getElementById('previewModal').classList.remove('flex');
+        }
+
+        function toggleDarkMode() {
+            const editor = document.getElementById('editor');
+            const toolbar = document.querySelector('.editor-toolbar');
+            
+            if (editor.style.backgroundColor === 'rgb(31, 41, 55)') {
+                editor.style.backgroundColor = 'white';
+                editor.style.color = 'black';
+                toolbar.style.background = '#F3F4F6';
+                toolbar.style.borderColor = '#D1D5DB';
+            } else {
+                editor.style.backgroundColor = '#1F2937';
+                editor.style.color = 'white';
+                toolbar.style.background = '#1E293B';
+                toolbar.style.borderColor = '#374151';
+            }
+        }
+
+        // Initialize editor content
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTextarea();
+        });
+
+        // Close preview on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePreview();
+            }
+        });
+    </script>
 </body>
 </html>

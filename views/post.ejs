@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= post.title %> | BlogSitem</title>
+    <title><%= post.title %> | Arda Gökay</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        primary: '#3B82F6',
-                        secondary: '#1E40AF',
+                        primary: '#DC2626',
+                        secondary: '#991B1B', 
                         accent: '#F59E0B',
-                        dark: '#1F2937',
-                        light: '#F8FAFC'
+                        dark: '#0F172A',
+                        darker: '#020617',
+                        light: '#1E293B',
+                        lightbg: '#FFFFFF',
+                        lighttext: '#1F2937'
                     },
                     fontFamily: {
                         'inter': ['Inter', 'sans-serif']
@@ -27,38 +31,69 @@
     </script>
     <style>
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%);
+        }
+        .gradient-bg-light {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F3F4F6 50%, #FFFFFF 100%);
+        }
+        .name-gradient {
+            background: linear-gradient(135deg, #DC2626 0%, #F59E0B 50%, #DC2626 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
         }
         .prose {
+            max-width: none;
+            color: #D1D5DB;
+            line-height: 1.75;
+        }
+        .prose-light {
             max-width: none;
             color: #374151;
             line-height: 1.75;
         }
-        .prose h2 {
-            color: #1F2937;
+        .prose h2, .prose-light h2 {
             font-weight: 700;
             font-size: 1.5em;
             margin-top: 2em;
             margin-bottom: 1em;
         }
-        .prose h3 {
-            color: #374151;
+        .prose h3, .prose-light h3 {
             font-weight: 600;
             font-size: 1.25em;
             margin-top: 1.6em;
             margin-bottom: 0.6em;
         }
-        .prose p {
+        .prose p, .prose-light p {
             margin-bottom: 1.25em;
         }
-        .prose ul, .prose ol {
+        .prose ul, .prose ol, .prose-light ul, .prose-light ol {
             margin-bottom: 1.25em;
             padding-left: 1.625em;
         }
-        .prose li {
+        .prose li, .prose-light li {
             margin-bottom: 0.5em;
         }
         .prose blockquote {
+            font-weight: 500;
+            font-style: italic;
+            color: #9CA3AF;
+            border-left-width: 0.25rem;
+            border-left-color: #4B5563;
+            quotes: "\201C""\201D""\2018""\2019";
+            margin-top: 1.6em;
+            margin-bottom: 1.6em;
+            padding-left: 1em;
+        }
+        .prose-light blockquote {
             font-weight: 500;
             font-style: italic;
             color: #6B7280;
@@ -69,186 +104,366 @@
             margin-bottom: 1.6em;
             padding-left: 1em;
         }
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-effect-light {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
-<body class="font-inter bg-light text-dark">
-    <!-- Header -->
-    <header class="bg-white shadow-lg sticky top-0 z-50">
+<body class="font-inter bg-darker text-gray-300 dark" id="theme-body">
+    <header class="glass-effect shadow-2xl sticky top-0 z-50 dark:glass-effect-light" id="header">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
-                <!-- Logo -->
                 <a href="/" class="flex items-center space-x-3 group">
-                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-pen-nib text-white text-lg"></i>
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-brain text-white text-lg"></i>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800 group-hover:text-primary transition-colors duration-300">BlogSitem</h1>
+                        <h1 class="text-2xl font-bold name-gradient">Arda Gökay</h1>
                     </div>
                 </a>
 
-                <!-- Search & Navigation -->
                 <div class="flex items-center space-x-8">
-                    <!-- Search -->
                     <form action="/search" method="GET" class="relative">
                         <input type="text" name="q" placeholder="Makalelerde ara..." 
-                               class="pl-10 pr-4 py-3 w-80 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-gray-50 transition-all duration-300">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                               class="pl-12 pr-4 py-3 w-80 bg-light border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 text-white placeholder-gray-400 dark:bg-gray-100 dark:text-gray-800 dark:border-gray-300">
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
                     </form>
 
-                    <!-- Navigation -->
                     <nav class="hidden lg:flex items-center space-x-8">
-                        <a href="/" class="text-gray-600 hover:text-primary font-medium transition-colors duration-300">
+                        <a href="/" class="text-gray-300 hover:text-primary font-medium transition-colors duration-300 dark:text-gray-700">
                             Ana Sayfa
                         </a>
                         <% categories.forEach(category => { %>
-                        <a href="/category/<%= category.slug %>" class="text-gray-600 hover:text-primary font-medium transition-colors duration-300">
+                        <a href="/category/<%= category.slug %>" class="text-gray-300 hover:text-primary font-medium transition-colors duration-300 dark:text-gray-700">
                             <%= category.name %>
                         </a>
                         <% }); %>
+                        <button onclick="toggleTheme()" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-secondary transition-all duration-300">
+                            <i class="fas fa-moon" id="theme-icon"></i>
+                        </button>
                     </nav>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Article Content -->
     <main class="min-h-screen py-12">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <!-- Article Header -->
-            <article class="bg-white rounded-2xl shadow-xl overflow-hidden">
-                <!-- Featured Image -->
-                <% if(post.image) { %>
-                <div class="relative h-96 overflow-hidden">
-                    <img src="<%= post.image %>" alt="<%= post.title %>" 
-                         class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div class="absolute bottom-6 left-8">
-                        <span class="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold">
-                            <%= post.category %>
-                        </span>
+        <div class="container mx-auto px-6 max-w-6xl">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Main Content -->
+                <div class="lg:w-2/3">
+                    <article class="bg-light rounded-2xl shadow-xl overflow-hidden dark:bg-white">
+                        <% if(post.image) { %>
+                        <div class="relative h-96 overflow-hidden">
+                            <img src="<%= post.image %>" alt="<%= post.title %>" 
+                                 class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-6 left-8">
+                                <span class="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold">
+                                    <%= post.category %>
+                                </span>
+                            </div>
+                            <div class="absolute top-6 right-6 flex space-x-2">
+                                <span class="bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="far fa-eye mr-1"></i><%= post.views || 0 %>
+                                </span>
+                                <span class="bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="far fa-heart mr-1"></i><%= post.likes || 0 %>
+                                </span>
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <div class="p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center space-x-4 text-gray-400 dark:text-gray-500">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="far fa-calendar text-primary"></i>
+                                        <span><%= post.createdAt.toLocaleDateString('tr-TR') %></span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="far fa-clock text-primary"></i>
+                                        <span>5 dk okuma</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="likePost('<%= post._id %>')" class="w-10 h-10 border border-gray-700 rounded-full flex items-center justify-center hover:border-primary hover:text-red-500 transition-colors duration-300 dark:border-gray-300">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <h1 class="text-4xl font-bold text-white mb-6 leading-tight dark:text-gray-800">
+                                <%= post.title %>
+                            </h1>
+
+                            <div class="prose prose-lg max-w-none dark:prose-light">
+                                <%= post.content.replace(/\n/g, '<br>') %>
+                            </div>
+
+                            <% if(post.tags && post.tags.length > 0){ %>
+                            <div class="flex flex-wrap gap-2 mt-8 pt-6 border-t border-gray-700 dark:border-gray-300">
+                                <% post.tags.forEach(function(tag){ %>
+                                <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm dark:bg-gray-200 dark:text-gray-700">
+                                    #<%= tag %>
+                                </span>
+                                <% }); %>
+                            </div>
+                            <% } %>
+
+                            <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-700 dark:border-gray-300">
+                                <div class="flex items-center space-x-4">
+                                    <span class="text-gray-400 font-medium dark:text-gray-600">Paylaş:</span>
+                                    <div class="flex space-x-3">
+                                        <a href="https://wa.me/?text=<%= encodeURIComponent(post.title + ' - Arda Gökay') %>" class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition-colors duration-300">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                        <a href="https://www.instagram.com/ardagky01/" class="w-10 h-10 bg-pink-600 text-white rounded-full flex items-center justify-center hover:bg-pink-700 transition-colors duration-300">
+                                            <i class="fab fa-instagram"></i>
+                                        </a>
+                                        <button onclick="shareViaSMS()" class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors duration-300">
+                                            <i class="fas fa-sms"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <a href="/admin/posts/<%= post._id %>/edit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-secondary transition-colors duration-300 font-medium">
+                                    Yazıyı Düzenle
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Comments Section -->
+                    <div class="mt-8 bg-light rounded-2xl shadow-xl overflow-hidden dark:bg-white">
+                        <div class="p-8">
+                            <h2 class="text-2xl font-bold text-white mb-6 dark:text-gray-800">Yorumlar</h2>
+                            
+                            <% if(comments && comments.length > 0){ %>
+                            <div class="space-y-6 mb-8">
+                                <% comments.forEach(function(comment){ %>
+                                <div class="bg-gray-800 rounded-xl p-6 dark:bg-gray-100">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                                <i class="fas fa-user text-white text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-white dark:text-gray-800"><%= comment.name %></h4>
+                                                <p class="text-gray-400 text-sm dark:text-gray-600"><%= comment.createdAt.toLocaleDateString('tr-TR') %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-300 dark:text-gray-700"><%= comment.comment %></p>
+                                </div>
+                                <% }); %>
+                            </div>
+                            <% } else { %>
+                            <div class="text-center py-8">
+                                <i class="fas fa-comments text-4xl text-gray-500 mb-4"></i>
+                                <p class="text-gray-400 dark:text-gray-600">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+                            </div>
+                            <% } %>
+
+                            <form action="/post/<%= post._id %>/comment" method="POST" class="space-y-4">
+                                <h3 class="text-xl font-bold text-white dark:text-gray-800">Yorum Yap</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input type="text" name="name" placeholder="Adınız" required 
+                                           class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder-gray-400 dark:bg-gray-100 dark:text-gray-800 dark:border-gray-300">
+                                    <input type="email" name="email" placeholder="E-posta" required 
+                                           class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder-gray-400 dark:bg-gray-100 dark:text-gray-800 dark:border-gray-300">
+                                </div>
+                                <textarea name="comment" rows="4" placeholder="Yorumunuz..." required 
+                                          class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder-gray-400 dark:bg-gray-100 dark:text-gray-800 dark:border-gray-300"></textarea>
+                                <button type="submit" class="bg-primary text-white px-6 py-3 rounded-xl hover:bg-secondary transition-colors duration-300 font-medium">
+                                    Yorumu Gönder
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                <% } %>
 
-                <!-- Article Content -->
-                <div class="p-8">
-                    <!-- Meta Information -->
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center space-x-4 text-gray-500">
-                            <div class="flex items-center space-x-2">
-                                <i class="far fa-calendar"></i>
-                                <span><%= post.createdAt.toLocaleDateString('tr-TR') %></span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="far fa-clock"></i>
-                                <span>5 dk okuma</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <button class="w-10 h-10 border border-gray-200 rounded-full flex items-center justify-center hover:border-primary hover:text-primary transition-colors duration-300">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="w-10 h-10 border border-gray-200 rounded-full flex items-center justify-center hover:border-primary hover:text-primary transition-colors duration-300">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Title -->
-                    <h1 class="text-4xl font-bold text-dark mb-6 leading-tight">
-                        <%= post.title %>
-                    </h1>
-
-                    <!-- Content -->
-                    <div class="prose prose-lg max-w-none">
-                        <%= post.content.replace(/\n/g, '<br>') %>
-                    </div>
-
-                    <!-- Tags -->
-                    <div class="flex flex-wrap gap-2 mt-8 pt-6 border-t border-gray-200">
-                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                            <%= post.category %>
-                        </span>
-                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                            Blog
-                        </span>
-                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                            Yazılım
-                        </span>
-                    </div>
-
-                    <!-- Share -->
-                    <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
-                        <div class="flex items-center space-x-4">
-                            <span class="text-gray-600 font-medium">Paylaş:</span>
-                            <div class="flex space-x-3">
-                                <button class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors duration-300">
-                                    <i class="fab fa-twitter"></i>
-                                </button>
-                                <button class="w-10 h-10 bg-blue-800 text-white rounded-full flex items-center justify-center hover:bg-blue-900 transition-colors duration-300">
-                                    <i class="fab fa-facebook-f"></i>
-                                </button>
-                                <button class="w-10 h-10 bg-blue-400 text-white rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-300">
-                                    <i class="fab fa-linkedin-in"></i>
-                                </button>
+                <!-- Sidebar -->
+                <div class="lg:w-1/3 space-y-6">
+                    <!-- Categories -->
+                    <div class="bg-light rounded-2xl shadow-xl overflow-hidden dark:bg-white">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-4 dark:text-gray-800">Kategoriler</h3>
+                            <div class="space-y-2">
+                                <% categories.forEach(function(category){ %>
+                                <a href="/category/<%= category.slug %>" class="flex items-center justify-between text-gray-300 hover:text-primary transition-colors duration-300 dark:text-gray-600">
+                                    <span><%= category.name %></span>
+                                    <i class="fas fa-chevron-right text-xs"></i>
+                                </a>
+                                <% }); %>
                             </div>
                         </div>
-                        <a href="/admin/posts/<%= post._id %>/edit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-secondary transition-colors duration-300 font-medium">
-                            Yazıyı Düzenle
-                        </a>
                     </div>
-                </div>
-            </article>
 
-            <!-- Related Posts -->
-            <div class="mt-12">
-                <h2 class="text-2xl font-bold text-dark mb-6">Benzer Yazılar</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Bu kısım dinamik olarak benzer yazılar getirilebilir -->
-                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                        <h3 class="font-semibold text-dark mb-2">Yazılım Geliştirme Süreçleri</h3>
-                        <p class="text-gray-600 text-sm mb-3">Modern yazılım geliştirme metodolojileri ve en iyi uygulamalar...</p>
-                        <a href="#" class="text-primary font-medium text-sm hover:text-secondary transition-colors duration-300">Devamını Oku →</a>
+                    <!-- Popular Posts -->
+                    <% if(popularPosts && popularPosts.length > 0){ %>
+                    <div class="bg-light rounded-2xl shadow-xl overflow-hidden dark:bg-white">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-4 dark:text-gray-800">Popüler Yazılar</h3>
+                            <div class="space-y-4">
+                                <% popularPosts.forEach(function(popularPost){ %>
+                                <a href="/post/<%= popularPost._id %>" class="flex items-center space-x-3 group">
+                                    <% if(popularPost.image){ %>
+                                    <img src="<%= popularPost.image %>" alt="<%= popularPost.title %>" 
+                                         class="w-16 h-16 object-cover rounded-lg">
+                                    <% } else { %>
+                                    <div class="w-16 h-16 bg-primary bg-opacity-20 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-file-alt text-primary"></i>
+                                    </div>
+                                    <% } %>
+                                    <div class="flex-1">
+                                        <h4 class="text-sm font-semibold text-white group-hover:text-primary transition-colors duration-300 dark:text-gray-800"><%= popularPost.title %></h4>
+                                        <div class="flex items-center space-x-2 text-xs text-gray-400 dark:text-gray-500">
+                                            <span><%= popularPost.views || 0 %> görüntüleme</span>
+                                            <span>•</span>
+                                            <span><%= popularPost.likes || 0 %> beğeni</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <% }); %>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                        <h3 class="font-semibold text-dark mb-2">Web Tasarım Trendleri 2024</h3>
-                        <p class="text-gray-600 text-sm mb-3">Bu yılın en popüler web tasarım trendleri ve örnekleri...</p>
-                        <a href="#" class="text-primary font-medium text-sm hover:text-secondary transition-colors duration-300">Devamını Oku →</a>
+                    <% } %>
+
+                    <!-- Contact Info -->
+                    <div class="bg-light rounded-2xl shadow-xl overflow-hidden dark:bg-white">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-4 dark:text-gray-800">İletişim</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-center space-x-3 text-gray-300 dark:text-gray-600">
+                                    <i class="fas fa-phone text-primary"></i>
+                                    <span>+90 538 375 16 33</span>
+                                </div>
+                                <div class="flex items-center space-x-3 text-gray-300 dark:text-gray-600">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                    <span>arda07gokay@gmail.com</span>
+                                </div>
+                                <div class="flex items-center space-x-3 text-gray-300 dark:text-gray-600">
+                                    <i class="fab fa-instagram text-primary"></i>
+                                    <span>@ardagky01</span>
+                                </div>
+                                <div class="flex items-center space-x-3 text-gray-300 dark:text-gray-600">
+                                    <i class="fab fa-github text-primary"></i>
+                                    <span>ardagokay</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adsense Placeholder -->
+                    <div class="bg-light rounded-2xl shadow-xl overflow-hidden dark:bg-white">
+                        <div class="p-6 text-center">
+                            <div class="w-full h-48 bg-gray-700 rounded-lg flex items-center justify-center dark:bg-gray-200">
+                                <div class="text-center">
+                                    <i class="fas fa-ad text-3xl text-gray-500 mb-2"></i>
+                                    <p class="text-gray-400 text-sm dark:text-gray-600">Reklam Alanı</p>
+                                    <p class="text-gray-500 text-xs dark:text-gray-500">Google AdSense</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Related Posts -->
+            <% if(recentPosts && recentPosts.length > 0){ %>
+            <div class="mt-12">
+                <h2 class="text-2xl font-bold text-white mb-6 dark:text-gray-800">Bunları da Beğenebilirsiniz</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <% recentPosts.forEach(function(recentPost){ %>
+                    <div class="bg-light rounded-xl p-6 shadow-lg border border-gray-700 hover-lift dark:bg-white dark:border-gray-200">
+                        <h3 class="font-semibold text-white mb-2 dark:text-gray-800"><%= recentPost.title %></h3>
+                        <p class="text-gray-400 text-sm mb-3 dark:text-gray-600"><%= recentPost.content.substring(0, 80) %>...</p>
+                        <div class="flex items-center justify-between">
+                            <a href="/post/<%= recentPost._id %>" class="text-primary font-medium text-sm hover:text-secondary transition-colors duration-300">Devamını Oku →</a>
+                            <div class="flex items-center space-x-2 text-gray-500 text-xs">
+                                <i class="far fa-eye"></i>
+                                <span><%= recentPost.views || 0 %></span>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+            <% } %>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-12">
+    <footer class="bg-darker border-t border-gray-800 py-12 dark:bg-gray-800 dark:border-gray-700">
         <div class="container mx-auto px-6">
             <div class="text-center">
-                <div class="flex items-center justify-center space-x-3 mb-4">
-                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
-                        <i class="fas fa-pen-nib text-white text-lg"></i>
+                <div class="flex items-center justify-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-lg"></i>
                     </div>
-                    <h3 class="text-2xl font-bold">BlogSitem</h3>
+                    <h3 class="text-2xl font-bold name-gradient">Arda Gökay</h3>
                 </div>
-                <p class="text-gray-400 max-w-md mx-auto mb-6">
-                    Modern blog platformu ile bilgiyi paylaşmanın en şık yolu.
+                <p class="text-gray-400 max-w-md mx-auto mb-6 leading-relaxed dark:text-gray-300">
+                    Psikoloji, bilim, felsefe, din ve mitoloji üzerine derinlemesine analizler.
                 </p>
-                <div class="flex justify-center space-x-4 mb-6">
-                    <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-300">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-300">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-300">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                </div>
-                <p class="text-gray-500 text-sm">
-                    &copy; 2024 BlogSitem. Tüm hakları saklıdır.
+                <p class="text-gray-500 text-sm dark:text-gray-400">
+                    &copy; 2025 <span class="name-gradient font-semibold">Arda Gökay</span>. Tüm hakları saklıdır.
                 </p>
             </div>
         </div>
     </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.getElementById('theme-body');
+            const header = document.getElementById('header');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        async function likePost(postId) {
+            try {
+                const response = await fetch(`/post/${postId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    location.reload();
+                }
+            } catch (error) {
+                console.error('Like error:', error);
+            }
+        }
+
+        function shareViaSMS() {
+            const text = `<%= post.title %> - Arda Gökay\n${window.location.href}`;
+            if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.open(`sms:?body=${encodeURIComponent(text)}`, '_blank');
+            } else {
+                alert('SMS paylaşımı sadece mobil cihazlarda çalışır.');
+            }
+        }
+    </script>
 </body>
 </html>

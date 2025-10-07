@@ -4,21 +4,15 @@ const path = require('path');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const multer = require('multer');
+const nodemailer = require('nodemailer');
 
 const app = express();
 
-// MongoDB Connection - RENDER İÇİN
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/blog';
-
-console.log('Connecting to MongoDB...');
 
 mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(() => {
-    console.log('✅ MongoDB connected successfully!');
-}).catch(err => {
-    console.error('❌ MongoDB connection error:', err);
 });
 
 const storage = multer.diskStorage({
@@ -37,6 +31,9 @@ const Post = mongoose.model('Post', {
     content: String,
     category: String,
     image: String,
+    tags: [String],
+    views: { type: Number, default: 0 },
+    likes: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -44,6 +41,22 @@ const Category = mongoose.model('Category', {
     name: String,
     slug: String,
     createdAt: { type: Date, default: Date.now }
+});
+
+const Comment = mongoose.model('Comment', {
+    postId: String,
+    name: String,
+    email: String,
+    comment: String,
+    createdAt: { type: Date, default: Date.now }
+});
+
+const transporter = nodemailer.createTransporter({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER || 'arda07gokay@gmail.com',
+        pass: process.env.EMAIL_PASS
+    }
 });
 
 app.set('view engine', 'ejs');
@@ -60,63 +73,153 @@ app.use(session({
 
 app.get('/', async (req, res) => {
     try {
-        const posts = await Post.find().sort({ createdAt: -1 });
+        const posts = await Post.find().sort({ createdAt: -1 }).limit(6);
         const categories = await Category.find().sort({ name: 1 });
-        res.render('index', { posts, categories });
+        const popularPosts = await Post.find().sort({ views: -1 }).limit(3);
+        res.render('index', { 
+            posts, 
+            categories, 
+            popularPosts,
+            theme: req.query.theme || 'dark'
+        });
     } catch (error) {
-        console.error('Error loading posts:', error);
-        res.render('index', { posts: [], categories: [] });
+        res.render('index', { 
+            posts: [], 
+            categories: [], 
+            popularPosts: [],
+            theme: req.query.theme || 'dark'
+        });
     }
 });
 
 app.get('/search', async (req, res) => {
     const searchQuery = req.query.q;
     const categories = await Category.find().sort({ name: 1 });
+    const popularPosts = await Post.find().sort({ views: -1 }).limit(3);
     
     if (!searchQuery) {
         const posts = await Post.find().sort({ createdAt: -1 });
-        return res.render('index', { posts, categories, searchQuery: '' });
+        return res.render('index', { 
+            posts, 
+            categories, 
+            popularPosts,
+            searchQuery: '',
+            theme: req.query.theme || 'dark'
+        });
     }
     
     const posts = await Post.find({
         $or: [
             { title: { $regex: searchQuery, $options: 'i' } },
-            { content: { $regex: searchQuery, $options: 'i' } }
+            { content: { $regex: searchQuery, $options: 'i' } },
+            { tags: { $regex: searchQuery, $options: 'i' } }
         ]
     }).sort({ createdAt: -1 });
     
-    res.render('search', { posts, categories, searchQuery });
+    res.render('search', { 
+        posts, 
+        categories, 
+        popularPosts,
+        searchQuery,
+        theme: req.query.theme || 'dark'
+    });
 });
 
 app.get('/category/:slug', async (req, res) => {
     const posts = await Post.find({ category: req.params.slug }).sort({ createdAt: -1 });
     const categories = await Category.find().sort({ name: 1 });
-    res.render('category', { posts, categories, currentCategory: req.params.slug });
+    const popularPosts = await Post.find().sort({ views: -1 }).limit(3);
+    res.render('category', { 
+        posts, 
+        categories, 
+        popularPosts,
+        currentCategory: req.params.slug,
+        theme: req.query.theme || 'dark'
+    });
 });
 
 app.get('/post/:id', async (req, res) => {
-    const post = await Post.findById(req.params.id);
-    const categories = await Category.find().sort({ name: 1 });
-    res.render('post', { post, categories });
+    try {
+        await Post.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } });
+        const post = await Post.findById(req.params.id);
+        const categories = await Category.find().sort({ name: 1 });
+        const popularPosts = await Post.find().sort({ views: -1 }).limit(3);
+        const recentPosts = await Post.find().sort({ createdAt: -1 }).limit(3);
+        const comments = await Comment.find({ postId: req.params.id }).sort({ createdAt: -1 });
+        
+        res.render('post', { 
+            post, 
+            categories, 
+            popularPosts,
+            recentPosts,
+            comments,
+            theme: req.query.theme || 'dark'
+        });
+    } catch (error) {
+        res.redirect('/');
+    }
+});
+
+app.post('/post/:id/like', async (req, res) => {
+    try {
+        await Post.findByIdAndUpdate(req.params.id, { $inc: { likes: 1 } });
+        res.json({ success: true });
+    } catch (error) {
+        res.json({ success: false });
+    }
+});
+
+app.post('/post/:id/comment', async (req, res) => {
+    try {
+        const comment = new Comment({
+            postId: req.params.id,
+            name: req.body.name,
+            email: req.body.email,
+            comment: req.body.comment
+        });
+        
+        await comment.save();
+        
+        const mailOptions = {
+            from: req.body.email,
+            to: 'arda07gokay@gmail.com',
+            subject: `Yeni Yorum: ${req.body.name}`,
+            html: `
+                <h2>Yeni Yorum Geldi!</h2>
+                <p><strong>İsim:</strong> ${req.body.name}</p>
+                <p><strong>Email:</strong> ${req.body.email}</p>
+                <p><strong>Yorum:</strong> ${req.body.comment}</p>
+                <p><strong>Yazı ID:</strong> ${req.params.id}</p>
+            `
+        };
+        
+        await transporter.sendMail(mailOptions);
+        
+        res.redirect(`/post/${req.params.id}?comment=success`);
+    } catch (error) {
+        res.redirect(`/post/${req.params.id}?comment=error`);
+    }
 });
 
 app.get('/admin', (req, res) => {
     if (!req.session.admin) {
         return res.redirect('/admin/login');
     }
-    res.render('admin/dashboard');
+    res.render('admin/dashboard', { theme: 'dark' });
 });
 
 app.get('/admin/login', (req, res) => {
-    res.render('admin/login');
+    res.render('admin/login', { theme: 'dark' });
 });
 
 app.post('/admin/login', (req, res) => {
-    if (req.body.password === 'admin123') {
+    const { username, password } = req.body;
+    
+    if (username === 'admin' && password === 'Arda123.') {
         req.session.admin = true;
         res.redirect('/admin');
     } else {
-        res.redirect('/admin/login');
+        res.redirect('/admin/login?error=1');
     }
 });
 
@@ -124,22 +227,25 @@ app.get('/admin/posts', async (req, res) => {
     if (!req.session.admin) return res.redirect('/admin/login');
     const posts = await Post.find().sort({ createdAt: -1 });
     const categories = await Category.find().sort({ name: 1 });
-    res.render('admin/posts', { posts, categories });
+    res.render('admin/posts', { posts, categories, theme: 'dark' });
 });
 
 app.get('/admin/posts/new', async (req, res) => {
     if (!req.session.admin) return res.redirect('/admin/login');
     const categories = await Category.find().sort({ name: 1 });
-    res.render('admin/new-post', { categories });
+    res.render('admin/new-post', { categories, theme: 'dark' });
 });
 
 app.post('/admin/posts', upload.single('image'), async (req, res) => {
     if (!req.session.admin) return res.redirect('/admin/login');
     
+    const tags = req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [];
+    
     const postData = {
         title: req.body.title,
         content: req.body.content,
-        category: req.body.category
+        category: req.body.category,
+        tags: tags
     };
     
     if (req.file) {
@@ -156,16 +262,19 @@ app.get('/admin/posts/:id/edit', async (req, res) => {
     if (!req.session.admin) return res.redirect('/admin/login');
     const post = await Post.findById(req.params.id);
     const categories = await Category.find().sort({ name: 1 });
-    res.render('admin/edit-post', { post, categories });
+    res.render('admin/edit-post', { post, categories, theme: 'dark' });
 });
 
 app.put('/admin/posts/:id', upload.single('image'), async (req, res) => {
     if (!req.session.admin) return res.redirect('/admin/login');
     
+    const tags = req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [];
+    
     const updateData = {
         title: req.body.title,
         content: req.body.content,
-        category: req.body.category
+        category: req.body.category,
+        tags: tags
     };
     
     if (req.file) {
@@ -187,12 +296,12 @@ app.delete('/admin/posts/:id', async (req, res) => {
 app.get('/admin/categories', async (req, res) => {
     if (!req.session.admin) return res.redirect('/admin/login');
     const categories = await Category.find().sort({ name: 1 });
-    res.render('admin/categories', { categories });
+    res.render('admin/categories', { categories, theme: 'dark' });
 });
 
 app.get('/admin/categories/new', (req, res) => {
     if (!req.session.admin) return res.redirect('/admin/login');
-    res.render('admin/new-category');
+    res.render('admin/new-category', { theme: 'dark' });
 });
 
 app.post('/admin/categories', async (req, res) => {
@@ -210,7 +319,7 @@ app.post('/admin/categories', async (req, res) => {
 app.get('/admin/categories/:id/edit', async (req, res) => {
     if (!req.session.admin) return res.redirect('/admin/login');
     const category = await Category.findById(req.params.id);
-    res.render('admin/edit-category', { category });
+    res.render('admin/edit-category', { category, theme: 'dark' });
 });
 
 app.put('/admin/categories/:id', async (req, res) => {

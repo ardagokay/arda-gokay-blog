@@ -3,47 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yeni Kategori</title>
+    <title>Yeni Kategori | Arda Gökay</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#DC2626',
+                        secondary: '#991B1B', 
+                        accent: '#F59E0B',
+                        dark: '#0F172A',
+                        light: '#1E293B'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-darker text-gray-300">
     <div class="flex h-screen">
-        <div class="w-64 bg-gray-800 text-white">
+        <!-- Sidebar -->
+        <div class="w-64 bg-light border-r border-gray-700">
             <div class="p-6">
-                <h2 class="text-2xl font-bold">Blog Admin</h2>
+                <h2 class="text-2xl font-bold text-white">Arda Gökay</h2>
+                <p class="text-sm text-gray-400">Admin Panel</p>
             </div>
             <nav class="mt-6">
-                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Dashboard</a>
-                <a href="/admin/posts" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yazılar</a>
-                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Yeni Yazı</a>
-                <a href="/admin/categories" class="block py-3 px-6 bg-gray-700 text-white">Kategoriler</a>
-                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700">Siteyi Gör</a>
+                <a href="/admin" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                </a>
+                <a href="/admin/posts" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-newspaper mr-3"></i>Yazılar
+                </a>
+                <a href="/admin/posts/new" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-plus mr-3"></i>Yeni Yazı
+                </a>
+                <a href="/admin/categories" class="block py-3 px-6 bg-primary text-white">
+                    <i class="fas fa-folder mr-3"></i>Kategoriler
+                </a>
+                <a href="/" class="block py-3 px-6 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-eye mr-3"></i>Siteyi Gör
+                </a>
             </nav>
         </div>
 
-        <div class="flex-1 p-8">
-            <div class="mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Yeni Kategori Ekle</h1>
+        <!-- Main Content -->
+        <div class="flex-1 p-8 overflow-y-auto">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-white">Yeni Kategori Ekle</h1>
+                <p class="text-gray-400">Blogunuz için yeni bir kategori oluşturun</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6 max-w-md">
-                <form method="POST" action="/admin/categories">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Kategori Adı</label>
-                        <input type="text" name="name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <div class="bg-light rounded-2xl shadow-xl border border-gray-700 p-8 max-w-2xl">
+                <form method="POST" action="/admin/categories" class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="block text-white text-sm font-bold mb-2">Kategori Adı</label>
+                        <input type="text" name="name" 
+                               class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                               placeholder="Örn: Psikoloji, Bilim, Felsefe..."
+                               required
+                               oninput="updateSlugPreview(this.value)">
+                        <p class="text-gray-400 text-sm mt-1">Kategori adı büyük harfle görünecektir</p>
                     </div>
 
-                    <div class="flex gap-4">
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                            Kategoriyi Kaydet
+                    <!-- Slug Preview -->
+                    <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                        <label class="block text-gray-400 text-sm font-bold mb-2">URL Önizleme</label>
+                        <div class="flex items-center space-x-2 text-gray-300">
+                            <span class="text-sm">https://siteniz.com/category/</span>
+                            <span id="slugPreview" class="text-primary font-semibold">kategori-adi</span>
+                        </div>
+                    </div>
+
+                    <!-- Category Icons Preview -->
+                    <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                        <label class="block text-gray-400 text-sm font-bold mb-3">Kategori İkonları</label>
+                        <div class="grid grid-cols-5 gap-3">
+                            <div class="text-center p-3 bg-gray-700 rounded-lg">
+                                <i class="fas fa-brain text-red-500 text-xl mb-2"></i>
+                                <p class="text-white text-xs">Psikoloji</p>
+                            </div>
+                            <div class="text-center p-3 bg-gray-700 rounded-lg">
+                                <i class="fas fa-atom text-blue-500 text-xl mb-2"></i>
+                                <p class="text-white text-xs">Bilim</p>
+                            </div>
+                            <div class="text-center p-3 bg-gray-700 rounded-lg">
+                                <i class="fas fa-book text-green-500 text-xl mb-2"></i>
+                                <p class="text-white text-xs">Felsefe</p>
+                            </div>
+                            <div class="text-center p-3 bg-gray-700 rounded-lg">
+                                <i class="fas fa-pray text-yellow-500 text-xl mb-2"></i>
+                                <p class="text-white text-xs">Din</p>
+                            </div>
+                            <div class="text-center p-3 bg-gray-700 rounded-lg">
+                                <i class="fas fa-dragon text-purple-500 text-xl mb-2"></i>
+                                <p class="text-white text-xs">Mitoloji</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-6 border-t border-gray-700">
+                        <button type="submit" class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-xl hover:shadow-xl transition-all duration-300 font-medium flex items-center space-x-2">
+                            <i class="fas fa-save"></i>
+                            <span>Kategoriyi Kaydet</span>
                         </button>
-                        <a href="/admin/categories" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600">
-                            İptal
+                        <a href="/admin/categories" class="bg-gray-700 text-white px-8 py-3 rounded-xl hover:bg-gray-600 transition-all duration-300 font-medium flex items-center space-x-2">
+                            <i class="fas fa-times"></i>
+                            <span>İptal</span>
                         </a>
                     </div>
                 </form>
             </div>
+
+            <!-- Quick Tips -->
+            <div class="mt-8 bg-light rounded-2xl p-6 border border-gray-700 max-w-2xl">
+                <h3 class="text-lg font-bold text-white mb-3">Kategori İpuçları</h3>
+                <ul class="text-gray-400 space-y-2 text-sm">
+                    <li class="flex items-center space-x-2">
+                        <i class="fas fa-lightbulb text-accent"></i>
+                        <span>Kategori adları büyük harfle görünecektir</span>
+                    </li>
+                    <li class="flex items-center space-x-2">
+                        <i class="fas fa-lightbulb text-accent"></i>
+                        <span>URL'ler otomatik olarak küçük harfe dönüştürülür</span>
+                    </li>
+                    <li class="flex items-center space-x-2">
+                        <i class="fas fa-lightbulb text-accent"></i>
+                        <span>Boşluklar tire (-) ile değiştirilir</span>
+                    </li>
+                    <li class="flex items-center space-x-2">
+                        <i class="fas fa-lightbulb text-accent"></i>
+                        <span>Türkçe karakterler otomatik dönüştürülür (ş → s, ı → i)</span>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
+
+    <script>
+        function updateSlugPreview(categoryName) {
+            const slugPreview = document.getElementById('slugPreview');
+            if (categoryName.trim() === '') {
+                slugPreview.textContent = 'kategori-adi';
+                return;
+            }
+            
+            // Convert to slug
+            let slug = categoryName
+                .toLowerCase()
+                .replace(/ /g, '-')
+                .replace(/[şşıİ]/g, 's')
+                .replace(/[ç]/g, 'c')
+                .replace(/[ğ]/g, 'g')
+                .replace(/[ü]/g, 'u')
+                .replace(/[ö]/g, 'o')
+                .replace(/[ı]/g, 'i')
+                .replace(/[^a-z0-9-]/g, '');
+            
+            slugPreview.textContent = slug;
+        }
+
+        // Initialize slug preview
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSlugPreview('');
+        });
+    </script>
 </body>
 </html>
